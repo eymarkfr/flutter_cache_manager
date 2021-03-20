@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:collection/collection.dart' show IterableExtension;
@@ -146,7 +147,8 @@ void main() {
       var newUrl = 'newUrl.com';
       var updatedObject = objectToInsert.copyWith(url: newUrl);
       await repo.update(updatedObject);
-      var retrievedObject = await (repo.get(objectToInsert.key) as FutureOr<CacheObject>);
+      var retrievedObject =
+          await (repo.get(objectToInsert.key) as FutureOr<CacheObject>);
       expect(retrievedObject.url, newUrl);
     });
 
@@ -162,7 +164,8 @@ void main() {
       var newUrl = 'newUrl.com';
       var updatedObject = objectToInsert.copyWith(url: newUrl);
       await repo.updateOrInsert(updatedObject);
-      var retrievedObject = await (repo.get(objectToInsert.key) as FutureOr<CacheObject>);
+      var retrievedObject =
+          await (repo.get(objectToInsert.key) as FutureOr<CacheObject>);
       expect(retrievedObject.url, newUrl);
     });
 
