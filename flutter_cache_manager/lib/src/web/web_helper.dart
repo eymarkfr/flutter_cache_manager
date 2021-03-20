@@ -22,7 +22,7 @@ const statusCodesNewFile = [HttpStatus.ok, HttpStatus.accepted];
 const statusCodesFileNotChanged = [HttpStatus.notModified];
 
 class WebHelper {
-  WebHelper(this._store, FileService fileFetcher)
+  WebHelper(this._store, FileService? fileFetcher)
       : _memCache = {},
         fileFetcher = fileFetcher ?? HttpFileService();
 
@@ -113,7 +113,7 @@ class WebHelper {
     if (!hasNewFile && !keepOldFile) {
       throw HttpExceptionWithStatus(
         response.statusCode,
-        'Invalid statusCode: ${response?.statusCode}',
+        'Invalid statusCode: ${response.statusCode}',
         uri: Uri.parse(cacheObject.url!),
       );
     }

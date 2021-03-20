@@ -125,7 +125,7 @@ class CacheManager implements BaseCacheManager {
   }
 
   Future<void> _pushFileToStream(StreamController streamController, String url,
-      String key, Map<String, String>? headers, bool withProgress) async {
+      String? key, Map<String, String>? headers, bool withProgress) async {
     key ??= url;
     FileInfo? cacheFile;
     try {
@@ -166,7 +166,9 @@ class CacheManager implements BaseCacheManager {
   ///Download the file and add to cache
   @override
   Future<FileInfo> downloadFile(String url,
-      {String? key, Map<String, String>? authHeaders, bool force = false}) async {
+      {String? key,
+      Map<String, String>? authHeaders,
+      bool force = false}) async {
     key ??= url;
     var fileResponse = await _webHelper!
         .downloadFile(
