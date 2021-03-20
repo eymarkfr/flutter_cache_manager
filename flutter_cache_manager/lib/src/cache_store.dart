@@ -54,7 +54,7 @@ class CacheStore {
     await _updateCacheDataInDatabase(cacheObject);
   }
 
-  Future<CacheObject?>? retrieveCacheData(String key,
+  Future<CacheObject?> retrieveCacheData(String key,
       {bool ignoreMemCache = false}) async {
     if (!ignoreMemCache && _memCache.containsKey(key)) {
       if (await _fileExists(_memCache[key])) {
