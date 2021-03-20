@@ -26,7 +26,7 @@ class WebHelper {
       : _memCache = {},
         fileFetcher = fileFetcher ?? HttpFileService();
 
-  final CacheStore _store;
+  final CacheStore? _store;
   @visibleForTesting
   final FileService fileFetcher;
   final Map<String, BehaviorSubject<FileResponse>> _memCache;
@@ -34,8 +34,8 @@ class WebHelper {
 
   ///Download the file from the url
   Stream<FileResponse> downloadFile(String url,
-      {String key,
-      Map<String, String> authHeaders,
+      {String? key,
+      Map<String, String>? authHeaders,
       bool ignoreMemCache = false}) {
     key ??= url;
     if (!_memCache.containsKey(key) || ignoreMemCache) {
@@ -43,14 +43,14 @@ class WebHelper {
       _memCache[key] = subject;
       unawaited(_downloadOrAddToQueue(url, key, authHeaders));
     }
-    return _memCache[key].stream;
+    return _memCache[key]!.stream;
   }
 
   var concurrentCalls = 0;
   Future<void> _downloadOrAddToQueue(
     String url,
     String key,
-    Map<String, String> authHeaders,
+    Map<String, String>? authHeaders,
   ) async {
     //Add to queue if there are too many calls.
     if (concurrentCalls >= fileFetcher.concurrentFetches) {
@@ -59,7 +59,7 @@ class WebHelper {
     }
 
     concurrentCalls++;
-    var subject = _memCache[key];
+    var subject = _memCache[key]!;
     try {
       await for (var result
           in _updateFile(url, key, authHeaders: authHeaders)) {
@@ -83,8 +83,8 @@ class WebHelper {
 
   ///Download the file from the url
   Stream<FileResponse> _updateFile(String url, String key,
-      {Map<String, String> authHeaders}) async* {
-    var cacheObject = await _store.retrieveCacheData(key);
+      {Map<String, String>? authHeaders}) async* {
+    var cacheObject = await _store!.retrieveCacheData(key);
     cacheObject = cacheObject == null
         ? CacheObject(url, key: key)
         : cacheObject.copyWith(url: url);
@@ -93,8 +93,8 @@ class WebHelper {
   }
 
   Future<FileServiceResponse> _download(
-      CacheObject cacheObject, Map<String, String> authHeaders) {
-    final headers = <String, String>{};
+      CacheObject cacheObject, Map<String, String>? authHeaders) {
+    final headers = <String, String?>{};
     if (authHeaders != null) {
       headers.addAll(authHeaders);
     }
@@ -114,14 +114,14 @@ class WebHelper {
       throw HttpExceptionWithStatus(
         response.statusCode,
         'Invalid statusCode: ${response?.statusCode}',
-        uri: Uri.parse(cacheObject.url),
+        uri: Uri.parse(cacheObject.url!),
       );
     }
 
     final oldCacheObject = cacheObject;
     var newCacheObject = _setDataFromHeaders(cacheObject, response);
     if (statusCodesNewFile.contains(response.statusCode)) {
-      int savedBytes;
+      int? savedBytes;
       await for (var progress in _saveFile(newCacheObject, response)) {
         savedBytes = progress;
         yield DownloadProgress(
@@ -130,13 +130,13 @@ class WebHelper {
       newCacheObject = newCacheObject.copyWith(length: savedBytes);
     }
 
-    unawaited(_store.putFile(newCacheObject).then((_) {
+    unawaited(_store!.putFile(newCacheObject).then((_) {
       if (newCacheObject.relativePath != oldCacheObject.relativePath) {
         _removeOldFile(oldCacheObject.relativePath);
       }
     }));
 
-    final file = await _store.fileSystem.createFile(
+    final file = await _store!.fileSystem!.createFile(
       newCacheObject.relativePath,
     );
     yield FileInfo(
@@ -182,13 +182,13 @@ class WebHelper {
       StreamController<int> receivedBytesResultController,
       CacheObject cacheObject,
       FileServiceResponse response) async {
-    final file = await _store.fileSystem.createFile(cacheObject.relativePath);
+    final file = await _store!.fileSystem!.createFile(cacheObject.relativePath);
 
     try {
       var receivedBytes = 0;
       final sink = file.openWrite();
-      await response.content.map((s) {
-        receivedBytes += s.length;
+      await response.content!.map((s) {
+        receivedBytes += s!.length;
         receivedBytesResultController.add(receivedBytes);
         return s;
       }).pipe(sink);
@@ -198,9 +198,9 @@ class WebHelper {
     await receivedBytesResultController.close();
   }
 
-  Future<void> _removeOldFile(String relativePath) async {
+  Future<void> _removeOldFile(String? relativePath) async {
     if (relativePath == null) return;
-    final file = await _store.fileSystem.createFile(relativePath);
+    final file = await _store!.fileSystem!.createFile(relativePath);
     if (await file.exists()) {
       await file.delete();
     }
@@ -208,7 +208,7 @@ class WebHelper {
 }
 
 class HttpExceptionWithStatus extends HttpException {
-  const HttpExceptionWithStatus(this.statusCode, String message, {Uri uri})
+  const HttpExceptionWithStatus(this.statusCode, String message, {Uri? uri})
       : super(message, uri: uri);
   final int statusCode;
 }

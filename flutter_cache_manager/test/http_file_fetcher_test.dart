@@ -83,8 +83,8 @@ void main() {
       });
 
       Future<FileFetcherResponse> _defaultHttpGetter(String url,
-          {Map<String, String> headers}) async {
-        var httpResponse = await client.get(url, headers: headers);
+          {Map<String, String>? headers}) async {
+        var httpResponse = await client.get(Uri.parse(url), headers: headers);
         return HttpFileFetcherResponse(httpResponse);
       }
 

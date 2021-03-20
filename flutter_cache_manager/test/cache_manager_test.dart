@@ -163,7 +163,7 @@ void main() {
       var fileStream = cacheManager.getFile(fileUrl);
       await expectLater(fileStream, emitsInOrder([cachedInfo, downloadedInfo]));
 
-      verify(webHelper.downloadFile(any, key: anyNamed('key'))).called(1);
+      verify(webHelper.downloadFile(any!, key: anyNamed('key'))).called(1);
     });
 
     test('Non-existing cacheFile should call to web', () async {
@@ -190,7 +190,7 @@ void main() {
       // ignore: deprecated_member_use_from_same_package
       var fileStream = cacheManager.getFile(fileUrl);
       await expectLater(fileStream, emitsInOrder([fileInfo]));
-      verify(webHelper.downloadFile(any, key: anyNamed('key'))).called(1);
+      verify(webHelper.downloadFile(any!, key: anyNamed('key'))).called(1);
     });
 
     test('Errors should be passed to the stream', () async {
@@ -214,7 +214,7 @@ void main() {
       // ignore: deprecated_member_use_from_same_package
       var fileStream = cacheManager.getFile(fileUrl);
       await expectLater(fileStream, emitsError(error));
-      verify(webHelper.downloadFile(any, key: anyNamed('key'))).called(1);
+      verify(webHelper.downloadFile(any!, key: anyNamed('key'))).called(1);
     });
   });
   group('explicit key', () {
@@ -283,7 +283,7 @@ void main() {
           fileExtension: extension);
       expect(await file.exists(), true);
       expect(await file.readAsBytes(), fileBytes);
-      verify(store.putFile(any)).called(1);
+      verify(store.putFile(any!)).called(1);
     });
 
     test('Check if file is written and info is stored, explicit key', () async {
@@ -300,7 +300,7 @@ void main() {
       expect(await file.exists(), true);
       expect(await file.readAsBytes(), fileBytes);
       final arg =
-          verify(store.putFile(captureAny)).captured.first as CacheObject;
+          verify(store.putFile(captureAny!)).captured.first as CacheObject;
       expect(arg.key, fileKey);
       expect(arg.url, fileUrl);
     });
@@ -322,7 +322,7 @@ void main() {
           fileExtension: extension);
       expect(await file.exists(), true);
       expect(await file.readAsBytes(), fileBytes);
-      verify(store.putFile(any)).called(1);
+      verify(store.putFile(any!)).called(1);
     });
 
     test('Check if file is written and info is stored, explicit key', () async {
@@ -344,7 +344,7 @@ void main() {
       expect(await file.exists(), true);
       expect(await file.readAsBytes(), fileBytes);
       final arg =
-          verify(store.putFile(captureAny)).captured.first as CacheObject;
+          verify(store.putFile(captureAny!)).captured.first as CacheObject;
       expect(arg.key, fileKey);
       expect(arg.url, fileUrl);
     });
@@ -361,7 +361,7 @@ void main() {
       var cacheManager = TestCacheManager(createTestConfig(), store: store);
 
       await cacheManager.removeFile(fileUrl);
-      verify(store.removeCachedFile(any)).called(1);
+      verify(store.removeCachedFile(any!)).called(1);
     });
 
     test("Don't remove files not in cache", () async {
@@ -373,7 +373,7 @@ void main() {
       var cacheManager = TestCacheManager(createTestConfig(), store: store);
 
       await cacheManager.removeFile(fileUrl);
-      verifyNever(store.removeCachedFile(any));
+      verifyNever(store.removeCachedFile(any!));
     });
   });
 
@@ -458,7 +458,7 @@ void main() {
       var fileUrl = 'baseflow.com/test';
 
       var store = MockStore();
-      when(store.putFile(argThat(anything)))
+      when(store.putFile(argThat(anything)!))
           .thenAnswer((_) => Future.value(VoidCallback));
 
       when(store.getFile(fileUrl)).thenAnswer((_) => Future.value(null));
@@ -498,8 +498,8 @@ void main() {
 class TestCacheManager extends CacheManager with ImageCacheManager {
   TestCacheManager(
     Config config, {
-    CacheStore store,
-    WebHelper webHelper,
+    CacheStore? store,
+    WebHelper? webHelper,
   }) : super.custom(config ?? createTestConfig(),
             cacheStore: store, webHelper: webHelper);
 }

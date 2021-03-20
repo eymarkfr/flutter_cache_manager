@@ -8,18 +8,18 @@ import 'package:http/http.dart' as http;
 ///Released under MIT License.
 
 /// Deprecated FileFetcher function
-typedef Future<FileFetcherResponse> FileFetcher(String url,
-    {Map<String, String> headers});
+typedef Future<FileFetcherResponse> FileFetcher(String? url,
+    {Map<String, String?>? headers});
 
 abstract class FileFetcherResponse {
   // ignore: always_declare_return_types
   get statusCode;
 
-  Uint8List get bodyBytes => null;
+  Uint8List? get bodyBytes => null;
 
   bool hasHeader(String name);
 
-  String header(String name);
+  String? header(String name);
 }
 
 /// Deprecated
@@ -34,7 +34,7 @@ class HttpFileFetcherResponse implements FileFetcherResponse {
   }
 
   @override
-  String header(String name) {
+  String? header(String name) {
     return _response.headers[name];
   }
 

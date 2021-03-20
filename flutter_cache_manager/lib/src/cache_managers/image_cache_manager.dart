@@ -17,11 +17,11 @@ mixin ImageCacheManager on BaseCacheManager {
   /// and returned to the caller.
   Stream<FileResponse> getImageFile(
     String url, {
-    String key,
-    Map<String, String> headers,
-    bool withProgress,
-    int maxHeight,
-    int maxWidth,
+    String? key,
+    Map<String, String>? headers,
+    bool? withProgress,
+    int? maxHeight,
+    int? maxWidth,
   }) async* {
     if (maxHeight == null && maxWidth == null) {
       yield* getFileStream(url,
@@ -37,7 +37,7 @@ mixin ImageCacheManager on BaseCacheManager {
     var fromCache = await getFileFromCache(resizedKey);
     if (fromCache != null) {
       yield fromCache;
-      if (fromCache.validTill.isAfter(DateTime.now())) {
+      if (fromCache.validTill!.isAfter(DateTime.now())) {
         return;
       }
       withProgress = false;
@@ -53,7 +53,7 @@ mixin ImageCacheManager on BaseCacheManager {
         maxHeight: maxHeight,
       );
     }
-    yield* _runningResizes[resizedKey];
+    yield* _runningResizes[resizedKey]!;
     _runningResizes.remove(resizedKey);
   }
 
@@ -61,16 +61,16 @@ mixin ImageCacheManager on BaseCacheManager {
   Future<FileInfo> _resizeImageFile(
     FileInfo originalFile,
     String key,
-    int maxWidth,
-    int maxHeight,
+    int? maxWidth,
+    int? maxHeight,
   ) async {
-    var originalFileName = originalFile.file.path;
+    var originalFileName = originalFile.file!.path;
     var fileExtension = originalFileName.split('.').last;
     if (!supportedFileNames.contains(fileExtension)) {
       return originalFile;
     }
 
-    var image = decodeImage(await originalFile.file.readAsBytes());
+    var image = decodeImage(await originalFile.file!.readAsBytes())!;
     if (maxWidth != null && maxHeight != null) {
       var resizeFactorWidth = image.width / maxWidth;
       var resizeFactorHeight = image.height / maxHeight;
@@ -81,8 +81,8 @@ mixin ImageCacheManager on BaseCacheManager {
     }
 
     var resized = copyResize(image, width: maxWidth, height: maxHeight);
-    var resizedFile = encodeNamedImage(resized, originalFileName);
-    var maxAge = originalFile.validTill.difference(DateTime.now());
+    var resizedFile = encodeNamedImage(resized, originalFileName)!;
+    var maxAge = originalFile.validTill!.difference(DateTime.now());
 
     var file = await putFile(
       originalFile.originalUrl,
@@ -104,10 +104,10 @@ mixin ImageCacheManager on BaseCacheManager {
     String url,
     String originalKey,
     String resizedKey,
-    Map<String, String> headers,
-    bool withProgress, {
-    int maxWidth,
-    int maxHeight,
+    Map<String, String>? headers,
+    bool? withProgress, {
+    int? maxWidth,
+    int? maxHeight,
   }) async* {
     await for (var response in getFileStream(
       url,

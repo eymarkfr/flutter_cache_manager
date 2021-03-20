@@ -25,11 +25,11 @@ abstract class Config {
   /// [fileService] defines where files are fetched, for example online.
   factory Config(
     String cacheKey, {
-    Duration stalePeriod,
-    int maxNrOfCacheObjects,
-    CacheInfoRepository repo,
-    FileSystem fileSystem,
-    FileService fileService,
+    Duration? stalePeriod,
+    int? maxNrOfCacheObjects,
+    CacheInfoRepository? repo,
+    FileSystem? fileSystem,
+    FileService? fileService,
   }) = impl.Config;
 
   String get cacheKey;

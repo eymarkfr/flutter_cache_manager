@@ -132,7 +132,7 @@ void main() {
       var cacheObject = CacheObject(fileUrl, relativePath: fileName, id: 1);
       await store.removeCachedFile(cacheObject);
 
-      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))))
+      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))!))
           .called(1);
     });
 
@@ -145,18 +145,18 @@ void main() {
           relativePath: 'testimage.png', id: 1);
       await config.returnsFile('testimage.png');
 
-      when(config.repo.getObjectsOverCapacity(any))
+      when(config.repo.getObjectsOverCapacity(any!))
           .thenAnswer((_) => Future.value([cacheObject]));
-      when(config.repo.getOldObjects(any)).thenAnswer((_) => Future.value([]));
+      when(config.repo.getOldObjects(any!)).thenAnswer((_) => Future.value([]));
       when(config.repo.get('baseflow.com/test.png'))
           .thenAnswer((_) => Future.value(cacheObject));
 
       expect(await store.getFile('baseflow.com/test.png'), isNotNull);
 
-      await untilCalled(config.repo.deleteAll(any));
+      await untilCalled(config.repo.deleteAll(any!));
 
-      verify(config.repo.getObjectsOverCapacity(any)).called(1);
-      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))))
+      verify(config.repo.getObjectsOverCapacity(any!)).called(1);
+      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))!))
           .called(1);
     });
 
@@ -169,19 +169,19 @@ void main() {
       var cacheObject = CacheObject('baseflow.com/test.png',
           relativePath: 'testimage.png', id: 1);
 
-      when(config.repo.getObjectsOverCapacity(any))
+      when(config.repo.getObjectsOverCapacity(any!))
           .thenAnswer((_) => Future.value([]));
-      when(config.repo.getOldObjects(any))
+      when(config.repo.getOldObjects(any!))
           .thenAnswer((_) => Future.value([cacheObject]));
       when(config.repo.get('baseflow.com/test.png'))
           .thenAnswer((_) => Future.value(cacheObject));
 
       expect(await store.getFile('baseflow.com/test.png'), isNotNull);
 
-      await untilCalled(config.repo.deleteAll(any));
+      await untilCalled(config.repo.deleteAll(any!));
 
-      verify(config.repo.getOldObjects(any)).called(1);
-      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))))
+      verify(config.repo.getOldObjects(any!)).called(1);
+      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))!))
           .called(1);
     });
 
@@ -194,21 +194,21 @@ void main() {
       var cacheObject = CacheObject('baseflow.com/test.png',
           relativePath: 'testimage.png', id: 1);
 
-      when(config.repo.getObjectsOverCapacity(any))
+      when(config.repo.getObjectsOverCapacity(any!))
           .thenAnswer((_) => Future.value([cacheObject]));
-      when(config.repo.getOldObjects(any))
+      when(config.repo.getOldObjects(any!))
           .thenAnswer((_) => Future.value([cacheObject]));
       when(config.repo.get('baseflow.com/test.png'))
           .thenAnswer((_) => Future.value(cacheObject));
 
       expect(await store.getFile('baseflow.com/test.png'), isNotNull);
 
-      await untilCalled(config.repo.deleteAll(any));
+      await untilCalled(config.repo.deleteAll(any!));
       await Future.delayed(const Duration(milliseconds: 5));
 
-      verify(config.repo.getObjectsOverCapacity(any)).called(1);
-      verify(config.repo.getOldObjects(any)).called(1);
-      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))))
+      verify(config.repo.getObjectsOverCapacity(any!)).called(1);
+      verify(config.repo.getOldObjects(any!)).called(1);
+      verify(config.repo.deleteAll(argThat(contains(cacheObject.id))!))
           .called(1);
     });
 
@@ -221,9 +221,9 @@ void main() {
       var cacheObject = CacheObject('baseflow.com/test.png',
           relativePath: 'testimage.png', id: 1);
 
-      when(config.repo.getObjectsOverCapacity(any))
+      when(config.repo.getObjectsOverCapacity(any!))
           .thenAnswer((_) => Future.value([]));
-      when(config.repo.getOldObjects(any)).thenAnswer((_) => Future.value([]));
+      when(config.repo.getOldObjects(any!)).thenAnswer((_) => Future.value([]));
       when(config.repo.get('baseflow.com/test.png'))
           .thenAnswer((_) => Future.value(cacheObject));
 
@@ -242,18 +242,18 @@ void main() {
       var cacheObject = CacheObject('baseflow.com/test.png',
           relativePath: 'testimage.png', id: 1);
 
-      when(config.repo.getObjectsOverCapacity(any))
+      when(config.repo.getObjectsOverCapacity(any!))
           .thenAnswer((_) => Future.value([]));
-      when(config.repo.getOldObjects(any)).thenAnswer((_) => Future.value([]));
+      when(config.repo.getOldObjects(any!)).thenAnswer((_) => Future.value([]));
       when(config.repo.get('baseflow.com/test.png'))
           .thenAnswer((_) => Future.value(cacheObject));
 
       expect(await store.getFile('baseflow.com/test.png'), isNotNull);
 
-      await untilCalled(config.repo.deleteAll(any));
+      await untilCalled(config.repo.deleteAll(any!));
 
-      verify(config.repo.getOldObjects(any)).called(1);
-      verifyNever(config.repo.deleteAll(argThat(contains(cacheObject.id))));
+      verify(config.repo.getOldObjects(any!)).called(1);
+      verifyNever(config.repo.deleteAll(argThat(contains(cacheObject.id))!));
     });
 
     test('Store should remove all files when emptying cache', () async {
@@ -275,7 +275,7 @@ void main() {
       await store.emptyCache();
 
       verify(config.repo
-          .deleteAll(argThat(containsAll([co1.id, co2.id, co3.id])))).called(1);
+          .deleteAll(argThat(containsAll([co1.id, co2.id, co3.id]))!)).called(1);
     });
   });
 }

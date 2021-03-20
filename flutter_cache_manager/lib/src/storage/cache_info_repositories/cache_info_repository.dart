@@ -11,20 +11,20 @@ abstract class CacheInfoRepository {
   Future<bool> open();
 
   /// Updates a given [CacheObject], if it exists, or adds a new item to the repository
-  Future<dynamic> updateOrInsert(CacheObject cacheObject);
+  Future<dynamic> updateOrInsert(CacheObject? cacheObject);
 
   /// Inserts [cacheObject] into the repository
   Future<CacheObject> insert(CacheObject cacheObject,
       {bool setTouchedToNow = true});
 
   /// Gets a [CacheObject] by [key]
-  Future<CacheObject> get(String key);
+  Future<CacheObject?> get(String? key);
 
   /// Deletes a cache object by [id]
-  Future<int> delete(int id);
+  Future<int> delete(int? id);
 
   /// Deletes items with [ids] from the repository
-  Future<int> deleteAll(Iterable<int> ids);
+  Future<int> deleteAll(Iterable<int?> ids);
 
   /// Updates an existing [cacheObject]
   Future<int> update(CacheObject cacheObject, {bool setTouchedToNow = true});
@@ -62,11 +62,11 @@ extension MigrationExtension on CacheInfoRepository {
     await previousRepository.deleteDataFile();
   }
 
-  Future<List<CacheObject>> _putAll(List<CacheObject> cacheObjects) async {
-    var storedObjects = <CacheObject>[];
+  Future<List<CacheObject?>> _putAll(List<CacheObject> cacheObjects) async {
+    var storedObjects = <CacheObject?>[];
     for (var newObject in cacheObjects) {
       var existingObject = await get(newObject.key);
-      CacheObject storedObject;
+      CacheObject? storedObject;
       if (existingObject == null) {
         storedObject = await insert(
           newObject.copyWith(id: null),

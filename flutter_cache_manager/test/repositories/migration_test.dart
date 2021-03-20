@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_cache_manager/src/storage/cache_object.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,8 +16,8 @@ void main() {
       for (var object in JsonRepoHelpers.startCacheObjects) {
         verify(
           mockRepo.insert(
-            argThat(CacheObjectMatcher(object)),
-            setTouchedToNow: anyNamed('setTouchedToNow'),
+            argThat(CacheObjectMatcher(object))!,
+            setTouchedToNow: anyNamed('setTouchedToNow')!,
           ),
         );
       }
@@ -37,8 +38,8 @@ void main() {
       for (var object in JsonRepoHelpers.startCacheObjects) {
         verify(
           mockRepo.update(
-            argThat(CacheObjectMatcher(object)),
-            setTouchedToNow: anyNamed('setTouchedToNow'),
+            argThat(CacheObjectMatcher(object))!,
+            setTouchedToNow: anyNamed('setTouchedToNow')!,
           ),
         );
       }
@@ -50,15 +51,14 @@ MockCacheInfoRepository setupMockRepo(bool returnObjects) {
   var mockRepo = MockCacheInfoRepository();
   when(mockRepo.get(any)).thenAnswer((realInvocation) {
     if (!returnObjects) return null;
-    var key = realInvocation.positionalArguments.first as String;
-    var cacheObject = JsonRepoHelpers.startCacheObjects.firstWhere(
+    var key = realInvocation.positionalArguments.first as String?;
+    var cacheObject = JsonRepoHelpers.startCacheObjects.firstWhereOrNull(
       (element) => element.key == key,
-      orElse: () => null,
     );
     return Future.value(cacheObject);
-  });
-  when(mockRepo.insert(any)).thenAnswer((realInvocation) =>
-      Future.value(realInvocation.positionalArguments.first as CacheObject));
+  } as Future<CacheObject?> Function(Invocation));
+  when(mockRepo.insert(any!)).thenAnswer((realInvocation) =>
+      Future.value(realInvocation.positionalArguments.first as CacheObject?));
   return mockRepo;
 }
 
@@ -82,8 +82,8 @@ class CacheObjectMatcher extends Matcher {
           item.url == value.url &&
           item.relativePath == value.relativePath &&
           item.length == value.length &&
-          item.touched.millisecondsSinceEpoch ==
-              value.touched.millisecondsSinceEpoch &&
+          item.touched!.millisecondsSinceEpoch ==
+              value.touched!.millisecondsSinceEpoch &&
           item.eTag == value.eTag;
     }
     if (!isMatch) matchState[_mismatchedValueKey] = item;

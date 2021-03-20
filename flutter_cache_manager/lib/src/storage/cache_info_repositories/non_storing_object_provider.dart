@@ -9,17 +9,17 @@ class NonStoringObjectProvider implements CacheInfoRepository {
   }
 
   @override
-  Future<int> delete(int id) {
+  Future<int> delete(int? id) {
     return Future.value(1);
   }
 
   @override
-  Future<int> deleteAll(Iterable<int> ids) {
+  Future<int> deleteAll(Iterable<int?> ids) {
     return Future.value(ids.length);
   }
 
   @override
-  Future<CacheObject> get(String url) {
+  Future<CacheObject> get(String? url) {
     return Future.value(null);
   }
 
@@ -60,7 +60,7 @@ class NonStoringObjectProvider implements CacheInfoRepository {
   }
 
   @override
-  Future updateOrInsert(CacheObject cacheObject) {
+  Future updateOrInsert(CacheObject? cacheObject) {
     return Future.value();
   }
 

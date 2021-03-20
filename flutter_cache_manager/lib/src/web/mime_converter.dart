@@ -2,7 +2,7 @@ import 'dart:io';
 
 ///Converts the most common MIME types to the most expected file extension.
 extension ContentTypeConverter on ContentType {
-  String get fileExtension {
+  String? get fileExtension {
     if (this == null) return null;
     if (mimeTypes.containsKey(mimeType)) return mimeTypes[mimeType];
     return '.$subType';

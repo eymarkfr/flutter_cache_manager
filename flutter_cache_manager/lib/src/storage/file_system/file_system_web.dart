@@ -6,7 +6,7 @@ class MemoryCacheSystem implements FileSystem {
   final directory = MemoryFileSystem().systemTempDirectory.createTemp('cache');
 
   @override
-  Future<File> createFile(String name) async {
-    return (await directory).childFile(name);
+  Future<File> createFile(String? name) async {
+    return (await directory).childFile(name!);
   }
 }

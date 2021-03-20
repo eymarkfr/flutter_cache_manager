@@ -76,7 +76,7 @@ void main() {
       expect(
           () async => webHelper.downloadFile(imageUrl).toList(),
           throwsA(predicate(
-              (e) => e is HttpExceptionWithStatus && e.statusCode == 404)));
+              (dynamic e) => e is HttpExceptionWithStatus && e.statusCode == 404)));
     });
 
     test('304 ignores content', () async {
@@ -125,7 +125,7 @@ void main() {
       var call2 = webHelper.downloadFile(imageUrl).toList();
       await Future.wait([call1, call2]);
 
-      verify(store.retrieveCacheData(any)).called(1);
+      verify(store.retrieveCacheData(any!)).called(1);
     });
 
     test('Calling webhelper twice excecutes twice when memcache ignored',
@@ -153,7 +153,7 @@ void main() {
           webHelper.downloadFile(imageUrl, ignoreMemCache: true).toList();
       await Future.wait([call1, call2]);
 
-      verify(store.retrieveCacheData(any)).called(2);
+      verify(store.retrieveCacheData(any!)).called(2);
     });
 
     test('No more concurrent calls than defined in fileService', () async {
@@ -223,7 +223,7 @@ void main() {
           .downloadFile(imageUrl)
           .firstWhere((r) => r is FileInfo, orElse: null);
       expect(result, isNotNull);
-      verify(store.putFile(any)).called(1);
+      verify(store.putFile(any!)).called(1);
     });
 
     test('File should be removed if extension changed', () async {
@@ -249,11 +249,11 @@ void main() {
 
 MockStore _createStore(Config config) {
   final store = MockStore();
-  when(store.putFile(argThat(anything)))
+  when(store.putFile(argThat(anything)!))
       .thenAnswer((_) => Future.value(VoidCallback));
-  when(store.retrieveCacheData(argThat(anything))).thenAnswer((invocation) =>
+  when(store.retrieveCacheData(argThat(anything)!)).thenAnswer((invocation) =>
       Future.value(
-          CacheObject(invocation.positionalArguments.first as String)));
+          CacheObject(invocation.positionalArguments.first as String?)));
   when(store.fileSystem).thenReturn(config.fileSystem);
   return store;
 }

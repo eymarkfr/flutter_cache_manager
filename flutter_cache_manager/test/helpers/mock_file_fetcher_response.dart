@@ -1,9 +1,9 @@
 import 'package:flutter_cache_manager/src/web/file_service.dart';
 
 class MockFileFetcherResponse implements FileServiceResponse {
-  final Stream<List<int>> _content;
+  final Stream<List<int>>? _content;
   final int _contentLength;
-  final String _eTag;
+  final String? _eTag;
   final String _fileExtension;
   final int _statusCode;
   final DateTime _validTill;
@@ -22,11 +22,11 @@ class MockFileFetcherResponse implements FileServiceResponse {
       this._fileExtension, this._statusCode, this._validTill);
 
   @override
-  Stream<List<int>> get content => _content;
+  Stream<List<int>>? get content => _content;
 
   @override
   // TODO: implement eTag
-  String get eTag => _eTag;
+  String? get eTag => _eTag;
 
   @override
   // TODO: implement fileExtension

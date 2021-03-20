@@ -9,10 +9,10 @@ import '../config/config.dart';
 class DefaultCacheManager extends CacheManager with ImageCacheManager {
   static const key = 'libCachedImageData';
 
-  static DefaultCacheManager _instance;
+  static DefaultCacheManager? _instance;
   factory DefaultCacheManager() {
     _instance ??= DefaultCacheManager._();
-    return _instance;
+    return _instance!;
   }
 
   DefaultCacheManager._() : super(Config(key));

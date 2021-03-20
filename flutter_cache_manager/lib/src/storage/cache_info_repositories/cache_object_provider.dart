@@ -11,21 +11,21 @@ const _tableCacheObject = 'cacheObject';
 
 class CacheObjectProvider extends CacheInfoRepository
     with CacheInfoRepositoryHelperMethods {
-  Database db;
-  String _path;
-  String databaseName;
+  late Database db;
+  String? _path;
+  String? databaseName;
 
   /// Either the path or the database name should be provided.
   /// If the path is provider it should end with '{databaseName}.db',
   /// for example: /data/user/0/com.example.example/databases/imageCache.db
-  CacheObjectProvider({String path, this.databaseName}) : _path = path;
+  CacheObjectProvider({String? path, this.databaseName}) : _path = path;
 
   @override
   Future<bool> open() async {
     if (!shouldOpenOnNewConnection()) {
-      return openCompleter.future;
+      return openCompleter!.future;
     }
-    var path = await _getPath();
+    var path = await (_getPath() as FutureOr<String>);
     await File(path).parent.create(recursive: true);
     db = await openDatabase(path, version: 3,
         onCreate: (Database db, int version) async {
@@ -87,8 +87,8 @@ class CacheObjectProvider extends CacheInfoRepository
   }
 
   @override
-  Future<dynamic> updateOrInsert(CacheObject cacheObject) {
-    if (cacheObject.id == null) {
+  Future<dynamic> updateOrInsert(CacheObject? cacheObject) {
+    if (cacheObject!.id == null) {
       return insert(cacheObject);
     } else {
       return update(cacheObject);
@@ -106,7 +106,7 @@ class CacheObjectProvider extends CacheInfoRepository
   }
 
   @override
-  Future<CacheObject> get(String key) async {
+  Future<CacheObject?> get(String? key) async {
     List<Map> maps = await db.query(_tableCacheObject,
         columns: null, where: '${CacheObject.columnKey} = ?', whereArgs: [key]);
     if (maps.isNotEmpty) {
@@ -116,13 +116,13 @@ class CacheObjectProvider extends CacheInfoRepository
   }
 
   @override
-  Future<int> delete(int id) {
+  Future<int> delete(int? id) {
     return db.delete(_tableCacheObject,
         where: '${CacheObject.columnId} = ?', whereArgs: [id]);
   }
 
   @override
-  Future<int> deleteAll(Iterable<int> ids) {
+  Future<int> deleteAll(Iterable<int?> ids) {
     return db.delete(_tableCacheObject,
         where: '${CacheObject.columnId} IN (' + ids.join(',') + ')');
   }
@@ -185,18 +185,18 @@ class CacheObjectProvider extends CacheInfoRepository
   @override
   Future<bool> exists() async {
     await _getPath();
-    return File(_path).exists();
+    return File(_path!).exists();
   }
 
-  Future<String> _getPath() async {
+  Future<String?> _getPath() async {
     Directory directory;
     if (_path != null) {
-      directory = File(_path).parent;
+      directory = File(_path!).parent;
     } else {
       directory = await getApplicationSupportDirectory();
     }
     await directory.create(recursive: true);
-    if (_path == null || !_path.endsWith('.db')) {
+    if (_path == null || !_path!.endsWith('.db')) {
       _path = join(directory.path, '$databaseName.db');
     }
     await _migrateOldDbPath(_path);
@@ -204,11 +204,11 @@ class CacheObjectProvider extends CacheInfoRepository
   }
 
   // Migration for pre-V2 path on iOS and macOS
-  Future _migrateOldDbPath(String newDbPath) async {
+  Future _migrateOldDbPath(String? newDbPath) async {
     final oldDbPath = join(await getDatabasesPath(), '$databaseName.db');
     if (oldDbPath != newDbPath && await File(oldDbPath).exists()) {
       try {
-        await File(oldDbPath).rename(newDbPath);
+        await File(oldDbPath).rename(newDbPath!);
       } on FileSystemException {
         // If we can not read the old db, a new one will be created.
       }

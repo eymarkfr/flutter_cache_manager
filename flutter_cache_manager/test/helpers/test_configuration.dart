@@ -19,9 +19,9 @@ class TestFileSystem extends FileSystem {
   final directoryFuture =
       MemoryFileSystem().systemTempDirectory.createTemp('test');
   @override
-  Future<File> createFile(String name) async {
+  Future<File> createFile(String? name) async {
     var dir = await directoryFuture;
     await dir.create(recursive: true);
-    return dir.childFile(name);
+    return dir.childFile(name!);
   }
 }

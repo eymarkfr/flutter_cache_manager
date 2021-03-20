@@ -5,7 +5,7 @@ class MockCacheInfoRepository extends Mock implements CacheInfoRepository {
   MockCacheInfoRepository._();
   factory MockCacheInfoRepository() {
     var provider = MockCacheInfoRepository._();
-    when(provider.open()).thenAnswer((realInvocation) async => null);
+    when(provider.open()).thenAnswer(((realInvocation) async => null) as Future<bool> Function(Invocation));
     return provider;
   }
 }

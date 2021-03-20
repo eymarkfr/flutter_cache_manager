@@ -17,7 +17,7 @@ class CacheObject {
 
   CacheObject(
     this.url, {
-    String key,
+    String? key,
     this.relativePath,
     this.validTill,
     this.eTag,
@@ -27,42 +27,42 @@ class CacheObject {
   }) : key = key ?? url;
 
   CacheObject.fromMap(Map<String, dynamic> map)
-      : id = map[columnId] as int,
-        url = map[columnUrl] as String,
-        key = map[columnKey] as String ?? map[columnUrl] as String,
-        relativePath = map[columnPath] as String,
+      : id = map[columnId] as int?,
+        url = map[columnUrl] as String?,
+        key = map[columnKey] as String? ?? map[columnUrl] as String?,
+        relativePath = map[columnPath] as String?,
         validTill =
             DateTime.fromMillisecondsSinceEpoch(map[columnValidTill] as int),
-        eTag = map[columnETag] as String,
-        length = map[columnLength] as int,
+        eTag = map[columnETag] as String?,
+        length = map[columnLength] as int?,
         touched =
             DateTime.fromMillisecondsSinceEpoch(map[columnTouched] as int);
 
   /// Internal ID used to represent this cache object
-  final int id;
+  final int? id;
 
   /// The URL that was used to download the file
-  final String url;
+  final String? url;
 
   /// The key used to identify the object in the cache.
   ///
   /// This key is optional and will default to [url] if not specified
-  final String key;
+  final String? key;
 
   /// Where the cached file is stored
-  final String relativePath;
+  final String? relativePath;
 
   /// When this cached item becomes invalid
-  final DateTime validTill;
+  final DateTime? validTill;
 
   /// eTag provided by the server for cache expiry
-  final String eTag;
+  final String? eTag;
 
   /// The length of the cached file
-  final int length;
+  final int? length;
 
   /// When the file is last used
-  final DateTime touched;
+  final DateTime? touched;
 
   Map<String, dynamic> toMap({bool setTouchedToNow = true}) {
     final map = <String, dynamic>{
@@ -72,7 +72,7 @@ class CacheObject {
       columnETag: eTag,
       columnValidTill: validTill?.millisecondsSinceEpoch ?? 0,
       columnTouched:
-          (setTouchedToNow ? clock.now() : touched).millisecondsSinceEpoch,
+          (setTouchedToNow ? clock.now() : touched)!.millisecondsSinceEpoch,
       columnLength: length,
     };
     if (id != null) {
@@ -86,12 +86,12 @@ class CacheObject {
   }
 
   CacheObject copyWith({
-    String url,
-    int id,
-    String relativePath,
-    DateTime validTill,
-    String eTag,
-    int length,
+    String? url,
+    int? id,
+    String? relativePath,
+    DateTime? validTill,
+    String? eTag,
+    int? length,
   }) {
     return CacheObject(
       url ?? this.url,
